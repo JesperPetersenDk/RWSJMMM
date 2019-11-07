@@ -10,8 +10,7 @@ enum class Method {GET,PUT,POST,DELETE}
 
 data class Member(val id : Int, val firstName : String, val lastName: String)
 
-
-
+/*
 fun main() {
     val content = ChoirContent(/*filename*/)
     val server = WebServer(content, 4711)
@@ -20,6 +19,7 @@ fun main() {
     /* ChoirContent().publish()*/
 
 }
+*/
 
 fun t(){
     TODO("Hello world")
