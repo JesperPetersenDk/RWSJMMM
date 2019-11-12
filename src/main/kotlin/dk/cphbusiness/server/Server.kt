@@ -9,7 +9,7 @@ import java.net.Socket
 import kotlin.concurrent.thread
 import kotlin.coroutines.CoroutineContext
 
-class WebServer ( val content : WebContent , val port : Int = 80) {
+class WebServer ( val content : IWebContent , val port : Int = 80) {
     fun start () { TODO (" Implement ␣ start ") }
     fun stop () { TODO (" Implement ␣ stop ") }
 }

@@ -2,9 +2,7 @@ package dk.cphbusiness.server
 
 import java.lang.reflect.Member
 
-class WebContent(){
-
-}
+data class Member(val id : Int, val firstName : String, val lastName: String)
 
 class ChoirContent() : IWebContent {
     fun getMember(): List<Member> =

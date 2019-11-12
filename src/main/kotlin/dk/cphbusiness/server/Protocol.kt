@@ -8,7 +8,7 @@ import java.lang.reflect.Member
 
 enum class Method {GET,PUT,POST,DELETE}
 
-data class Member(val id : Int, val firstName : String, val lastName: String)
+
 
 /*
 fun main() {
