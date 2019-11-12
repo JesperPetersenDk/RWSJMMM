@@ -21,10 +21,6 @@ fun main() {
 }
 */
 
-fun t(){
-    TODO("Hello world")
-}
-
 
 class Request(input : InputStream) {
     val resource: String
