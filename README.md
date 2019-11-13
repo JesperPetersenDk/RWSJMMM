@@ -18,3 +18,16 @@ Int):` `Member?`*
   
 *3: the url `/member` requested with PUT and a JSON member in the body,
 corresponds to `putMember(member: Member):` `Member`*
+
+## Requirements
+
+> The web server shall be based on raw socket calls, ie. no other middleware
+is allowed.
+The server endpoints (accepted urls) shall be dynamically extracted from the
+content class using reflection.
+Concurrency in the server should be handled using coroutines.
+Data shall be communicated using JSON as protocol. You can use 3rd party
+software as gson for this task, or write your own parser as we did in class
+
+**A link to the github repository. In groups on [Peergrade](https://app.peergrade.io/login) by Wednesday
+November 20th at 12:00**
