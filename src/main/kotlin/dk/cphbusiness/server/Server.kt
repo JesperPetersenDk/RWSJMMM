@@ -1,5 +1,6 @@
 package dk.cphbusiness.server
 
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -28,18 +29,6 @@ class WebServer ( val content : ChoirContent , val port : Int) : CoroutineScope 
         return map
     }
 
-    fun getFuncName() : MutableList<String> {
-        val type = content::class
-        val list = mutableListOf<String>()
-        for (member in type.memberFunctions) {
-            for (method in Method.values()) {
-                if (member.name.contains(method.name.toLowerCase()))
-                    list.add(member.name)
-            }
-        }
-        return list
-    }
-
     fun handle(request: Request, response: Response) {
         val URL = request.resource
         val argument = URL.split("/");
@@ -55,16 +44,29 @@ class WebServer ( val content : ChoirContent , val port : Int) : CoroutineScope 
 
         when (argument.size) {
             2 -> {
-                requestedEndpoint.call(content)
+                if(request.resource.contains("put")) {
+
+                    val json = request.resource
+                    val member = requestedEndpoint.call(content, Gson().fromJson(json, Member::class.java))
+                    response.append(Gson().toJson(member))
+                    response.send()
+
+                    println(request.resource)
+                } else {
+                    val members = requestedEndpoint.call(content)
+                    response.append(Gson().toJson(members))
+                }
             }
             3 -> {
-                requestedEndpoint.call(content, Integer.valueOf(argument[2]))
+                val member = requestedEndpoint.call(content, Integer.valueOf(argument[2]))
+                response.append(Gson().toJson(member))
             }
             else -> {
                 response.append("Error url")
                 response.send()
             }
         }
+        response.send()
 
     }
 
@@ -84,6 +86,7 @@ class WebServer ( val content : ChoirContent , val port : Int) : CoroutineScope 
 }
 
 fun main() {
+
     WebServer(ChoirContent(),5000).start()
 }
 
