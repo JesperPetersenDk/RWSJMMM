@@ -11,7 +11,7 @@ its memory
 and urls:**
 
 *1: the url `/member` requested with the GET method corresponds to the
-method `getMember():` `List<Member>` *
+method `getMember():` `List<Member>`*
 
 *2: the url `/member/<integer>` also with GET corresponds to `getMember(id:
 Int):` `Member?`*
