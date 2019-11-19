@@ -32,12 +32,13 @@ class ChoirContent() : IWebContent {
     }
 
     fun putMember(member: Member) : Member {
+
         var lastId = db.size
         if (lastId == 0) {
             lastId = 1
         }
 
-        val tempMember = member.copy(id = lastId)
+        val tempMember = member.copy(id = lastId + 1)
         db.add(tempMember)
 
         return member

@@ -23,16 +23,14 @@ class WebServer ( val content : ChoirContent , val port : Int) : CoroutineScope 
         for (member in type.memberFunctions) {
             for (method in Method.values()) {
                 if (member.name.contains(method.name.toLowerCase()))
-                    map.put(member.name.toLowerCase(), member)
+                    map.put("/"+member.name.toLowerCase(), member)
             }
         }
         return map
     }
 
     fun handle(request: Request, response: Response) {
-        val URL = request.resource
-        val argument = URL.split("/");
-        val endpoint = argument[1]
+        val endpoint = request.resource
         val map = getFunctionNames()
         val requestedEndpoint = map.get(endpoint)
 
@@ -42,16 +40,22 @@ class WebServer ( val content : ChoirContent , val port : Int) : CoroutineScope 
             return
         }
 
+        if(endpoint.contains("put")) {
+            requestedEndpoint.call(content, Gson().fromJson(request.body,Member::class.java))
+            println("put")
+            println(request.body)
+        }
+
+        if(endpoint.contains("get")) {
+            println("get")
+            val members = requestedEndpoint.call(content)
+            response.append(Gson().toJson(members))
+        }
+/*
         when (argument.size) {
             2 -> {
-                if(request.resource.contains("put")) {
+                if(endpoint.contains("put")) {
 
-                    val json = request.resource
-                    val member = requestedEndpoint.call(content, Gson().fromJson(json, Member::class.java))
-                    response.append(Gson().toJson(member))
-                    response.send()
-
-                    println(request.resource)
                 } else {
                     val members = requestedEndpoint.call(content)
                     response.append(Gson().toJson(members))
@@ -66,6 +70,10 @@ class WebServer ( val content : ChoirContent , val port : Int) : CoroutineScope 
                 response.send()
             }
         }
+
+ */
+
+
         response.send()
 
     }
@@ -77,7 +85,6 @@ class WebServer ( val content : ChoirContent , val port : Int) : CoroutineScope 
             launch {
                 handle(Request(socket.getInputStream()), Response(socket.getOutputStream()))
             }
-
         }
     }
     fun stop () {
