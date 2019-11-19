@@ -17,65 +17,33 @@ class WebServer ( val content : ChoirContent , val port : Int) : CoroutineScope 
     override val coroutineContext : CoroutineContext
         get () = job
 
-    fun getFunctionNames(): MutableMap<String, KFunction<*>> {
+    fun getFunction(request: Request): Any?{
         val type = content::class
-        val map = mutableMapOf<String, KFunction<*>>();
-        for (member in type.memberFunctions) {
-            for (method in Method.values()) {
-                if (member.name.contains(method.name.toLowerCase()))
-                    map.put("/"+member.name.toLowerCase(), member)
+        val arguments = request.resource.split("/").filter { !it.isNullOrBlank() }
+        if(arguments.size == 1) {
+            for (member in type.memberFunctions) {
+                if (arguments[0].equals(member.name, true) && request.method == Method.GET) {
+                    return member.call(content)
+                } else if(arguments[0].equals(member.name, true) && request.method == Method.PUT) {
+                    println("put")
+                    return member.call(content, Gson().fromJson(request.body,Member::class.java))
+                }
             }
         }
-        return map
+        if(arguments.size == 2) {
+            for (member in type.memberFunctions) {
+                if (arguments[0].equals(member.name, true) && request.method == Method.GET) {
+                    return member.call(content, Integer.valueOf(arguments[1]))
+                }
+            }
+        }
+        return null
     }
 
     fun handle(request: Request, response: Response) {
-        val endpoint = request.resource
-        val map = getFunctionNames()
-        val requestedEndpoint = map.get(endpoint)
-
-        if (requestedEndpoint == null) {
-            response.append("Error url")
-            response.send()
-            return
-        }
-
-        if(endpoint.contains("put")) {
-            requestedEndpoint.call(content, Gson().fromJson(request.body,Member::class.java))
-            println("put")
-            println(request.body)
-        }
-
-        if(endpoint.contains("get")) {
-            println("get")
-            val members = requestedEndpoint.call(content)
-            response.append(Gson().toJson(members))
-        }
-/*
-        when (argument.size) {
-            2 -> {
-                if(endpoint.contains("put")) {
-
-                } else {
-                    val members = requestedEndpoint.call(content)
-                    response.append(Gson().toJson(members))
-                }
-            }
-            3 -> {
-                val member = requestedEndpoint.call(content, Integer.valueOf(argument[2]))
-                response.append(Gson().toJson(member))
-            }
-            else -> {
-                response.append("Error url")
-                response.send()
-            }
-        }
-
- */
-
-
+        val f = getFunction(request)
+        response.append(Gson().toJson(f, Any::class.java))
         response.send()
-
     }
 
     fun start () {
