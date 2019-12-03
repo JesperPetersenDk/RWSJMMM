@@ -24,11 +24,12 @@ class ChoirContent() : IWebContent {
         return db
     }
     fun getMember(id: Int) : Member? {
-        val member = db.get(id-1)
-        if(member == null) {
-            return null
+        for (member in db) {
+            if (member.id == id) {
+                return member
+            }
         }
-        return member
+        return null
     }
 
     fun putMember(member: Member) : Member {

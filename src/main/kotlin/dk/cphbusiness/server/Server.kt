@@ -33,7 +33,11 @@ class WebServer ( val content : ChoirContent , val port : Int) : CoroutineScope 
         if(arguments.size == 2) {
             for (member in type.memberFunctions) {
                 if (arguments[0].equals(member.name, true) && request.method == Method.GET) {
-                    return member.call(content, Integer.valueOf(arguments[1]))
+                    try {
+                        return member.call(content, Integer.valueOf(arguments[1]))
+                    } catch (e : Exception) {
+                        return null
+                    }
                 }
             }
         }
