@@ -66,6 +66,7 @@ class Response (val output : OutputStream) {
     fun send() {
         val head = """
             HTTP/1.1 200 OK
+            Access-Control-Allow-Origin: *
             Content-Type: text/html; charset=UTF-8 
             Content-Length: ${body.length}
             Connection: close

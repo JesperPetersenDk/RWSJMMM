@@ -41,8 +41,10 @@ class WebServer ( val content : ChoirContent , val port : Int) : CoroutineScope 
     }
 
     fun handle(request: Request, response: Response) {
+        println(request.headers)
         val f = getFunction(request)
         response.append(Gson().toJson(f, Any::class.java))
+        println(response.body)
         response.send()
     }
 
